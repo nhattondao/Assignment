@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Bookmark</title>
+    <meta charset="UTF-8"/>
+    <style>
+        /* Copy toàn bộ style từ list.html để đồng bộ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Arial", sans-serif;
+        }
+        body {
+            background: #f4f7fb;
+            color: #2c3e50;
+            padding: 0;
+            margin: 0;
+        }
+        .header-container {
+            background: #1f2d3d;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img {
+            height: 70px;
+            width: auto;
+            display: block;
+        }
+        .navbar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .navbar a {
+            color: #d1d8e0;
+            text-decoration: none;
+            font-size: 15px;
+            transition: 0.2s;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+        .navbar a:hover {
+            background: #34495e;
+            color: #00c9a7;
+        }
+        .user-menu img {
+            height: 42px;
+            width: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            object-fit: cover;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+            text-align: center;
+        }
+        a.action-link {
+            padding: 7px 14px;
+            text-decoration: none;
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        a.back { background: #3498db; }
+        a.back:hover { background: #217dbb; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            margin: 0 0 8px;
+            color: #34495e;
+            font-size: 18px;
+        }
+        .meta {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .actions a {
+            padding: 6px 10px;
+            font-size: 13px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .view { background: #3498db; color: white; }
+        .view:hover { background: #217dbb; }
+        .remove { background: #e74c3c; color: white; }
+        .remove:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <!-- Logo -->
+        <div class="logo">
+            <a th:href="@{/articles}"><img src="/images/dev_log2.png" alt="Logo"></a>
+        </div>
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a th:href="@{/articles}">🏠 Trang chủ</a>
+            <a th:href="@{/articles/bookmarks}">📦 Bookmark</a>
+        </nav>
+
+        <!-- User icon -->
+        <div class="user-menu">
+            <a href="/account"><img src="/images/user.png" alt="Tài khoản"></a>
+        </div>
+    </div>
+</header>
+
+<h1>Danh sách Bài viết đã Bookmark</h1>
+
+<!-- Thông báo flash -->
+<div th:if="${message}" style="margin: 10px auto; max-width: 800px; padding: 10px; background: #eafaf1; border: 1px solid #2ecc71; border-radius: 6px; color: #27ae60;">
+    <span th:text="${message}"></span>
+</div>
+
+<div class="grid">
+    <div class="card" th:if="${#lists.isEmpty(bookmarkedArticles)}">
+        <p>❌ Chưa có bài viết nào được bookmark.</p>
+        <a class="action-link back" th:href="@{/articles}">⬅ Quay lại danh sách bài viết</a>
+    </div>
+
+    <div class="card" th:each="article : ${bookmarkedArticles}">
+        <h3 th:text="${article.title}"></h3>
+        <div class="meta">
+            ✍️ <span th:text="${article.author}"></span> | 💻 <span th:text="${article.language}"></span>
+        </div>
+        <div class="actions">
+            <a class="view" th:href="@{'/articles/' + ${article.id}}">👁️ Xem</a>
+            <a class="remove" th:href="@{'/articles/bookmark/' + ${article.id}}">❌ Bỏ Bookmark</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

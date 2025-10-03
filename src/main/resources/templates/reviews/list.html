@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Reviews</title>
+    <meta charset="UTF-8"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        a {
+            text-decoration: none;
+            margin: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 14px;
+            background: #3498db;
+            color: white;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            background: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fbfc;
+        }
+
+        tr:hover {
+            background: #ecf5ff;
+        }
+
+        .actions a {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .edit {
+            background: #f39c12;
+            color: white;
+        }
+
+        .edit:hover {
+            background: #e67e22;
+        }
+
+        .delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .delete:hover {
+            background: #c0392b;
+        }
+
+        /* ⭐ styling */
+        .stars {
+            color: gold;
+            font-size: 16px;
+        }
+        .stars .empty {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+<h1>Danh sách Reviews</h1>
+<a th:href="@{/articles}" class="back-link">⬅ Quay lại danh sách bài viết</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Article ID</th>
+        <th>Người dùng</th>
+        <th>Số sao</th>
+        <th>Bình luận</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="review : ${reviews}">
+        <td th:text="${review.id}"></td>
+        <td th:text="${review.articleId}"></td>
+        <td th:text="${review.username}"></td>
+        <td>
+                <span class="stars">
+                    <!-- Sao đầy -->
+                    <span th:each="i : ${#numbers.sequence(1, review.rating)}">⭐</span>
+                    <!-- Sao rỗng -->
+                    <span th:each="i : ${#numbers.sequence(1, 5 - review.rating)}" class="empty">⭐</span>
+                </span>
+        </td>
+        <td th:text="${review.comment}"></td>
+        <td class="actions">
+            <a th:href="@{'/reviews/edit/' + ${review.id}}" class="edit">✏️ Sửa</a>
+            <a th:href="@{'/reviews/delete/' + ${review.id}}"
+               onclick="return confirm('Xóa review này?')" class="delete">🗑️ Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

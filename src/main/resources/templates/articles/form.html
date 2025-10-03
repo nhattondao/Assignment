@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm/Sửa Bài viết</title>
+    <meta charset="UTF-8"/>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Arial", sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #2c3e50;
+        }
+
+        /* Header */
+        .header-container {
+            background: #1f2d3d;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img {
+            height: 70px;
+            width: auto;
+        }
+        .navbar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .navbar a {
+            color: #d1d8e0;
+            text-decoration: none;
+            font-size: 15px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .navbar a:hover {
+            background: #34495e;
+            color: #00c9a7;
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropbtn {
+            background: none;
+            border: none;
+            color: #d1d8e0;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 8px 14px;
+            border-radius: 6px;
+        }
+        .dropbtn:hover {
+            background: #34495e;
+            color: #00c9a7;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: #fff;
+            min-width: 160px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+        .dropdown-content a {
+            color: #2c3e50;
+            padding: 10px 14px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+        .dropdown-content a:hover {
+            background: #ecf0f1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .user-menu img {
+            height: 42px;
+            width: 42px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            object-fit: cover;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #34495e;
+        }
+
+        /* Form */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #2c3e50;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        textarea {
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn-submit {
+            background: #2ecc71;
+            border: none;
+            padding: 12px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-submit:hover {
+            background: #27ae60;
+        }
+        .btn-back {
+            display: inline-block;
+            text-align: center;
+            padding: 10px 14px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .btn-back:hover {
+            background: #217dbb;
+        }
+
+        /* Action buttons container */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="/images/dev_log2.png" alt="Logo">
+        </div>
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="dropdown">
+                <button class="dropbtn">📚 Phân loại 1</button>
+                <div class="dropdown-content">
+                    <a href="#">Frontend</a>
+                    <a href="#">Backend</a>
+                    <a href="#">Database</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">🛠 Phân loại 2</button>
+                <div class="dropdown-content">
+                    <a href="#">Beginner</a>
+                    <a href="#">Intermediate</a>
+                    <a href="#">Advanced</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- User -->
+        <div class="user-menu">
+            <a href="/account"><img src="/images/user.png" alt="Tài khoản"></a>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <h1 th:text="${article.id} != null ? '✏️ Sửa Bài viết' : '➕ Thêm Bài viết mới'"></h1>
+    <form th:action="@{/articles}" th:object="${article}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div>
+            <label>Tiêu đề:</label>
+            <input type="text" th:field="*{title}" required/>
+        </div>
+
+        <div>
+            <label>Tác giả:</label>
+            <input type="text" th:field="*{author}" required/>
+        </div>
+
+        <div>
+            <label>Ngôn ngữ:</label>
+            <input type="text" th:field="*{language}"/>
+        </div>
+
+        <div>
+            <label>Nội dung:</label>
+            <textarea th:field="*{content}" rows="6"></textarea>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn-submit">💾 Lưu</button>
+            <a th:href="@{/articles}" class="btn-back">⬅ Quay lại danh sách</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

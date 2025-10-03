@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết Bài viết</title>
+    <meta charset="UTF-8"/>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Arial", sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #2c3e50;
+        }
+
+        /* Header */
+        .header-container {
+            background: #1f2d3d;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img {
+            height: 70px;
+            width: auto;
+        }
+        .navbar {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .navbar a {
+            color: #d1d8e0;
+            text-decoration: none;
+            font-size: 15px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+        .navbar a:hover {
+            background: #34495e;
+            color: #00c9a7;
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropbtn {
+            background: none;
+            border: none;
+            color: #d1d8e0;
+            font-size: 15px;
+            cursor: pointer;
+            padding: 8px 14px;
+            border-radius: 6px;
+        }
+        .dropbtn:hover {
+            background: #34495e;
+            color: #00c9a7;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: #fff;
+            min-width: 160px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+        .dropdown-content a {
+            color: #2c3e50;
+            padding: 10px 14px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+        .dropdown-content a:hover {
+            background: #ecf0f1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .user-menu img {
+            height: 42px;
+            width: 42px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            object-fit: cover;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #34495e;
+
+            word-wrap: break-word;      /* Tự động xuống dòng khi gặp từ quá dài */
+            overflow-wrap: break-word;  /* Chuẩn hiện đại */
+            white-space: pre-line;
+        }
+        .meta {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .content {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #2c3e50;
+
+            /* Fix overflow text */
+            word-wrap: break-word;      /* Tự động xuống dòng khi gặp từ quá dài */
+            overflow-wrap: break-word;  /* Chuẩn hiện đại */
+            white-space: pre-line;      /* Giữ xuống dòng nhưng không cho dính liền một dòng */
+        }
+
+
+        /* Action buttons */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .actions a {
+            padding: 10px 14px;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: 0.2s;
+            font-weight: bold;
+        }
+        .bookmark-btn {
+            background: #9b59b6;
+            color: white;
+        }
+        .bookmark-btn:hover { background: #7e3794; }
+        .back-btn {
+            background: #3498db;
+            color: white;
+        }
+        .back-btn:hover { background: #217dbb; }
+
+        /* Review section */
+        h2 {
+            margin-top: 40px;
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .add-review {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 14px;
+            background: #2ecc71;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .add-review:hover {
+            background: #27ae60;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            background: #1f2d3d;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        tr:hover {
+            background: #f1f1f1;
+        }
+        td a {
+            text-decoration: none;
+            font-size: 13px;
+            margin: 0 4px;
+        }
+        td a:hover {
+            text-decoration: underline;
+        }
+        .edit-link { color: #f39c12; font-weight: bold; }
+        .delete-link { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="/images/dev_log2.png" alt="Logo">
+        </div>
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="dropdown">
+                <button class="dropbtn">📚 Phân loại 1</button>
+                <div class="dropdown-content">
+                    <a href="#">Frontend</a>
+                    <a href="#">Backend</a>
+                    <a href="#">Database</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn">🛠 Phân loại 2</button>
+                <div class="dropdown-content">
+                    <a href="#">Beginner</a>
+                    <a href="#">Intermediate</a>
+                    <a href="#">Advanced</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- User -->
+        <div class="user-menu">
+            <a href="/account"><img src="/images/user.png" alt="Tài khoản"></a>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <h1 th:text="${article.title}"></h1>
+    <div class="meta">
+        ✍️ <span th:text="${article.author}"></span> | 💻 <span th:text="${article.language}"></span>
+    </div>
+    <div class="content" th:text="${article.content}"></div>
+
+    <div class="actions">
+        <a class="bookmark-btn" th:href="@{/articles/bookmark/{id}(id=${article.id})}">📑 Bookmark</a>
+        <a class="back-btn" th:href="@{/articles}">⬅ Quay lại danh sách</a>
+    </div>
+
+    <hr>
+
+    <h2>Đánh giá khóa học / Review</h2>
+    <a class="add-review" th:href="@{/reviews/new/{articleId}(articleId=${article.id})}">➕ Thêm Review</a>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Người dùng</th>
+            <th>Số sao</th>
+            <th>Nội dung</th>
+            <th>Hành động</th>
+        </tr>
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.id}"></td>
+            <td th:text="${review.courseName}"></td> <!-- 🔥 có thể đổi sang review.userName nếu đúng field -->
+            <td th:text="${review.rating} + ' ⭐'"></td>
+            <td th:text="${review.comment}"></td>
+            <td>
+                <a class="edit-link" th:href="@{/reviews/edit/{id}(id=${review.id})}">✏️ Sửa</a> |
+                <a class="delete-link" th:href="@{/reviews/delete/{id}(id=${review.id}, articleId=${article.id})}"
+                   onclick="return confirm('Xóa review này?')">🗑️ Xóa</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
