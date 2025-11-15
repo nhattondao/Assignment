@@ -135,23 +135,66 @@
             margin: 20px 0;
         }
 
-        /* Filter form */
-        .filter-form {
-            display: inline-block;
-            margin-left: 10px;
+        /* Form tìm kiếm + lọc */
+        .search-filter-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .filter-form select {
-            padding: 8px 12px;
+        .search-input {
+            padding: 8px 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
             outline: none;
             font-size: 14px;
-            cursor: pointer;
+            width: 180px;
+            transition: 0.2s;
         }
-        .filter-form select:hover {
+        .search-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 4px rgba(52, 152, 219, 0.3);
+        }
+
+        .search-filter-form select {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .search-filter-form select:hover {
             border-color: #3498db;
         }
+
+        .search-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .search-btn:hover {
+            background-color: #217dbb;
+        }
+
+        .date-input {
+            padding: 7px 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .date-input:focus {
+            border-color: #3498db;
+        }
+
 
         /* Action links */
         a.action-link {
@@ -240,6 +283,7 @@
         .bookmark { background: #9b59b6; color: white; }
         .bookmark:hover { background: #7e3794; }
     </style>
+
 </head>
 <body>
 <header>
@@ -289,22 +333,29 @@
     <div>
         <a class="action-link new-article" th:href="@{/articles/new}">➕ Thêm bài viết mới</a>
         <a class="action-link bookmark" th:href="@{/articles/bookmarks}">📦 Bookmark</a>
-
     </div>
 
-    <!-- Dropdown chọn ngôn ngữ lập trình -->
-    <form th:action="@{/articles}" method="get" class="filter-form">
-        <select name="language" th:value="${language}" onchange="this.form.submit()">
-            <option value="">-- Chọn ngôn ngữ lập trình --</option>
+    <!-- Thanh tìm kiếm + Bộ lọc -->
+    <form th:action="@{/articles}" method="get" class="search-filter-form">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="🔍 Tìm tiêu đề..." class="search-input"/>
+
+        <select name="language" th:value="${language}">
+            <option value="">Ngôn ngữ</option>
             <option value="Java" th:selected="${language=='Java'}">Java</option>
             <option value="Python" th:selected="${language=='Python'}">Python</option>
             <option value="C#" th:selected="${language=='C#'}">C#</option>
             <option value="JavaScript" th:selected="${language=='JavaScript'}">JavaScript</option>
         </select>
+
+        <input type="date" name="fromDate" th:value="${fromDate}" class="date-input"/>
+        <span>→</span>
+        <input type="date" name="toDate" th:value="${toDate}" class="date-input"/>
+
+        <button type="submit" class="search-btn">Tìm</button>
     </form>
 
-
 </div>
+
 
 <!-- Card layout -->
 <div class="grid">

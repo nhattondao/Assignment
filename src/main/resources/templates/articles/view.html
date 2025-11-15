@@ -214,6 +214,26 @@
         }
         .edit-link { color: #f39c12; font-weight: bold; }
         .delete-link { color: #e74c3c; font-weight: bold; }
+
+        .sort-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .sort-btn {
+            background: #00b894;
+            color: white;
+            padding: 8px 14px;
+            text-decoration: none;
+            font-size: 13px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .sort-btn:hover {
+            background: #019870;
+        }
+
     </style>
 </head>
 <body>
@@ -257,16 +277,30 @@
         ✍️ <span th:text="${article.author}"></span> | 💻 <span th:text="${article.language}"></span>
     </div>
     <div class="content" th:text="${article.content}"></div>
+    <img th:if="${article.image != null}"
+         th:src="'data:image/jpeg;base64,' + ${article.base64Image}"
+         alt="Ảnh bài viết"
+         style="max-width: 400px; margin-bottom: 15px; border-radius: 12px;">
+
 
     <div class="actions">
         <a class="bookmark-btn" th:href="@{/articles/bookmark/{id}(id=${article.id})}">📑 Bookmark</a>
         <a class="back-btn" th:href="@{/articles}">⬅ Quay lại danh sách</a>
     </div>
 
+
     <hr>
 
     <h2>Đánh giá khóa học / Review</h2>
     <a class="add-review" th:href="@{/reviews/new/{articleId}(articleId=${article.id})}">➕ Thêm Review</a>
+
+    <!-- Nút sắp xếp -->
+    <div class="sort-buttons">
+        <a th:href="@{/articles/{id}(id=${article.id}, sort='asc')}"
+           class="sort-btn">⬇️ Sắp xếp tăng dần (1⭐ → 5⭐)</a>
+        <a th:href="@{/articles/{id}(id=${article.id}, sort='desc')}"
+           class="sort-btn">⬆️ Sắp xếp giảm dần (5⭐ → 1⭐)</a>
+    </div>
 
     <table>
         <tr>
@@ -278,7 +312,7 @@
         </tr>
         <tr th:each="review : ${reviews}">
             <td th:text="${review.id}"></td>
-            <td th:text="${review.courseName}"></td> <!-- 🔥 có thể đổi sang review.userName nếu đúng field -->
+            <td th:text="${review.reviewerName}"></td>
             <td th:text="${review.rating} + ' ⭐'"></td>
             <td th:text="${review.comment}"></td>
             <td>
@@ -288,6 +322,9 @@
             </td>
         </tr>
     </table>
+
+
+
 </div>
 
 </body>

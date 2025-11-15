@@ -1,26 +1,58 @@
 package com.example.assignment.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Review {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String courseName;
-    private int rating; // 1..5
+
+    private Long articleId; // 👈 Quan trọng: có trường này
+
+    private String reviewerName;
     private String comment;
-    private Long articleId; // liên kết tới Article
+    private int rating;
 
-
-    public Review() {}
-    public Review(Long id, String courseName, int rating, String comment, Long articleId) {
-        this.id = id; this.courseName = courseName; this.rating = rating; this.comment = comment; this.articleId = articleId;
+    // --- Getters & Setters ---
+    public Long getId() {
+        return id;
     }
-    // getters & setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getCourseName() { return courseName; }
-    public void setCourseName(String courseName) { this.courseName = courseName; }
-    public int getRating() { return rating; }
-    public void setRating(int rating) { this.rating = rating; }
-    public String getComment() { return comment; }
-    public void setComment(String comment) { this.comment = comment; }
-    public Long getArticleId() { return articleId; }
-    public void setArticleId(Long articleId) { this.articleId = articleId; }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(Long articleId) {
+        this.articleId = articleId;
+    }
+
+    public String getReviewerName() {
+        return reviewerName;
+    }
+
+    public void setReviewerName(String reviewerName) {
+        this.reviewerName = reviewerName;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 }

@@ -214,8 +214,9 @@
 
 <div class="container">
     <h1 th:text="${article.id} != null ? '✏️ Sửa Bài viết' : '➕ Thêm Bài viết mới'"></h1>
-    <form th:action="@{/articles}" th:object="${article}" method="post">
-        <input type="hidden" th:field="*{id}"/>
+    <form th:action="@{/articles}" th:object="${article}" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" th:field="*{id}"/>
 
         <div>
             <label>Tiêu đề:</label>
@@ -236,6 +237,19 @@
             <label>Nội dung:</label>
             <textarea th:field="*{content}" rows="6"></textarea>
         </div>
+
+        <div>
+            <label>Hình ảnh minh họa:</label>
+            <input type="file" name="imageFile" accept="image/*"/>
+        </div>
+
+        <!-- Khi sửa bài viết, hiển thị ảnh hiện tại nếu có -->
+        <div th:if="${article.image != null}">
+            <p>Ảnh hiện tại:</p>
+            <img th:src="'data:image/jpeg;base64,' + ${article.base64Image}"
+                 alt="Ảnh bài viết" style="max-width: 200px; border-radius: 8px; margin-top: 8px;">
+        </div>
+
 
         <div class="actions">
             <button type="submit" class="btn-submit">💾 Lưu</button>

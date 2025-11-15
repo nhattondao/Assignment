@@ -1,39 +1,31 @@
 package com.example.assignment.repository;
 
-
 import com.example.assignment.model.Article;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
-
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
-public class ArticleRepository {
-    private Map<Long, Article> store = new ConcurrentHashMap<>();
-    private AtomicLong seq = new AtomicLong(1);
+public interface ArticleRepository extends JpaRepository<Article, Long> {
+
+    @Query("""
+    SELECT a FROM Article a
+    WHERE 
+      (:keyword IS NULL OR :keyword = '' OR LOWER(a.title) LIKE LOWER(CONCAT('%', :keyword, '%')))
+      AND (:language IS NULL OR :language = '' OR a.language = :language)
+      AND ((:fromDate IS NULL) OR a.createdAt >= :fromDate)
+      AND ((:toDate IS NULL) OR a.createdAt <= :toDate)
+    ORDER BY a.createdAt DESC
+""")
+    List<Article> searchArticles(
+            @Param("keyword") String keyword,
+            @Param("language") String language,
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate);
 
 
-    public Article save(Article a) {
-        if (a.getId() == null) a.setId(seq.getAndIncrement());
-        store.put(a.getId(), a);
-        return a;
-    }
-
-
-    public Optional<Article> findById(Long id) { return Optional.ofNullable(store.get(id)); }
-    public List<Article> findAll() { return new ArrayList<>(store.values()); }
-    public void deleteById(Long id) { store.remove(id); }
-
-
-    public List<Article> search(String q, String language) {
-        return store.values().stream()
-                .filter(a -> (q==null || q.isBlank() || a.getTitle().toLowerCase().contains(q.toLowerCase()) || a.getContent().toLowerCase().contains(q.toLowerCase())))
-                .filter(a -> (language==null || language.isBlank() || a.getLanguage().equalsIgnoreCase(language)))
-                .sorted(Comparator.comparing(Article::getId).reversed())
-                .collect(Collectors.toList());
-    }
 }
